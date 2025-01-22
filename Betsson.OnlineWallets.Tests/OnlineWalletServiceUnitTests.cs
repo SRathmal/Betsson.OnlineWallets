@@ -83,5 +83,23 @@ namespace Betsson.OnlineWallets.UnitTests.Services
             Assert.Equal("Deposit amount should be valid", exception.Message);
 
         }
+
+        // TC_05: Test WithdrawFundsAsync method when there is sufficient balance.
+        [Fact]
+        public async Task WithdrawFundsAsync_ValidWithdrawal_ReturnsUpdatedBalance()
+        {
+            var withdrawal = new Withdrawal { Amount = 50m };
+
+            _repositoryMock.Setup(r => r.GetLastOnlineWalletEntryAsync())
+                           .ReturnsAsync(new OnlineWalletEntry { BalanceBefore = 100m });
+
+            _repositoryMock.Setup(r => r.InsertOnlineWalletEntryAsync(It.IsAny<OnlineWalletEntry>()))
+                           .Returns(Task.CompletedTask);
+
+            var balance = await _service.WithdrawFundsAsync(withdrawal);
+
+            // Assertion for verifying WithdrawFundsAsync function to return updated balance once after withdrowed. 
+            Assert.Equal(50, balance.Amount);
+        }
     }
 }
