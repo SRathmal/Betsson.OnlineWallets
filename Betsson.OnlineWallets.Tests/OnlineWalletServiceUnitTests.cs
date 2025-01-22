@@ -34,6 +34,24 @@ namespace Betsson.OnlineWallets.UnitTests.Services
             Assert.StrictEqual(0, balance.Amount);
         }
 
-        
+        // TC_02: Test GetBalanceAsync method when there is a transaction (balance is calculated)
+        [Fact]
+        public async Task GetBalanceAsync_WithTransaction_ReturnsCorrectBalance()
+        {
+            var onlineWalletEntry = new OnlineWalletEntry
+            {
+                BalanceBefore = 100m,
+                Amount = 50m
+            };
+
+            _repositoryMock.Setup(r => r.GetLastOnlineWalletEntryAsync())
+                           .ReturnsAsync(onlineWalletEntry);
+
+            var balance = await _service.GetBalanceAsync();
+
+            // Assertion for Verifying GetBalanceAsync function returned correct balance when transactions are present.
+            Assert.Equal(150, balance.Amount);
+        }
+
     }
 }
