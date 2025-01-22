@@ -71,5 +71,17 @@ namespace Betsson.OnlineWallets.UnitTests.Services
             Assert.Equal(250, balance.Amount);
         }
 
+        // TC_04: Test DepositFundsAsync method when deposited invalid amount.
+        [Fact]
+        public async Task DepositFundsAsync_InvalidDeposit_ReturnsException()
+        {
+            var deposit = new Deposit { Amount = -5m };
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.DepositFundsAsync(deposit));
+
+            //Assertion for Verifying ArugmentException throwed correctly. 
+            Assert.Equal("Deposit amount should be valid", exception.Message);
+
+        }
     }
 }
