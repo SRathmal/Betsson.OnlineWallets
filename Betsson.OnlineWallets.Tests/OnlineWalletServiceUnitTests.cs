@@ -101,5 +101,19 @@ namespace Betsson.OnlineWallets.UnitTests.Services
             // Assertion for verifying WithdrawFundsAsync function to return updated balance once after withdrowed. 
             Assert.Equal(50, balance.Amount);
         }
+
+        // TC_06: Test WithdrawFundsAsync when there is insufficient balance
+        [Fact]
+        public async Task WithdrawFundsAsync_InsufficientBalance_ThrowsInsufficientBalanceException()
+        {
+            var withdrawal = new Withdrawal { Amount = 150m };
+
+            _repositoryMock.Setup(r => r.GetLastOnlineWalletEntryAsync())
+                           .ReturnsAsync(new OnlineWalletEntry { BalanceBefore = 100m });
+
+            // Assertion for verifying Insufficient Exception throwed correctly.  
+            await Assert.ThrowsAsync<InsufficientBalanceException>(() => _service.WithdrawFundsAsync(withdrawal));
+        }
+
     }
 }
