@@ -53,5 +53,23 @@ namespace Betsson.OnlineWallets.UnitTests.Services
             Assert.Equal(150, balance.Amount);
         }
 
+        // TC_03: Test DepositFundsAsync method after deposited money. 
+        [Fact]
+        public async Task DepositFundsAsync_ValidDeposit_ReturnsUpdatedBalance()
+        {
+            var deposit = new Deposit { Amount = 100m };
+
+            _repositoryMock.Setup(r => r.GetLastOnlineWalletEntryAsync())
+                           .ReturnsAsync(new OnlineWalletEntry { BalanceBefore = 150m });
+
+            _repositoryMock.Setup(r => r.InsertOnlineWalletEntryAsync(It.IsAny<OnlineWalletEntry>()))
+                           .Returns(Task.CompletedTask);
+
+            var balance = await _service.DepositFundsAsync(deposit);
+
+            // Assertion for Verifying DepositFundsAsync function to return updated balance once after depositted. 
+            Assert.Equal(250, balance.Amount);
+        }
+
     }
 }
